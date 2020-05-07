@@ -13,23 +13,14 @@
     </extensions>
 
     <actions>
-        <!-- Java Mvp Classes. -->
-        <action id="JustMvp.NewJavaMvpClassesAction" class="com.bfu.plugin.justmvp.NewJavaMvpClassesAction"
-                text="Java Mvp Classes" description="Auto generate template sources for just-mvp (java)">
+
+        <!-- Kotlin Mvp Classes. -->
+        <action id="JustMvp.NewMvpClassesAction" class="com.bfu.plugin.justmvp.NewMvpClassesAction"
+                text="Just Mvp Classes" description="Auto generate template sources for just-mvp.">
             <add-to-group
                     group-id="NewGroup"
                     anchor="after"
                     relative-to-action="Kotlin.NewFile"
-            />
-        </action>
-
-        <!-- Kotlin Mvp Classes. -->
-        <action id="JustMvp.NewKotlinMvpClassesAction" class="com.bfu.plugin.justmvp.NewKotlinMvpClassesAction"
-                text="Kotlin Mvp Classes" description="Auto generate template sources for just-mvp (kotlin)">
-            <add-to-group
-                    group-id="NewGroup"
-                    anchor="after"
-                    relative-to-action="JustMvp.NewJavaMvpClassesAction"
             />
         </action>
 

@@ -2,7 +2,9 @@
   <dictionary name="Fubo">
     <words>
       <w>androidx</w>
+      <w>constraintlayout</w>
       <w>groooooomit</w>
+      <w>kotlinx</w>
     </words>
   </dictionary>
 </component>
