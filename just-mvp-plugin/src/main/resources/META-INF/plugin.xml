@@ -1,24 +1,37 @@
 <idea-plugin>
     <id>com.bfu.just-mvp-plugin</id>
-    <name>Plugin display name here</name>
-    <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+    <name>JustMvpGenerator</name>
+    <version>1.0.0</version>
+    <vendor email="fubofubo@hotmail.com" url="https://github.com/groooooomit">groooooomit</vendor>
 
     <description><![CDATA[
-    Enter short description for your plugin here.<br>
-    <em>most HTML tags may be used</em>
+    This is a small plugin to quickly generate just-mvp template code.<br>
     ]]></description>
-
-    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
-         on how to target different products -->
-    <!-- uncomment to enable plugin in all products
-    <depends>com.intellij.modules.lang</depends>
-    -->
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
     </extensions>
 
     <actions>
-        <!-- Add your actions here -->
+        <!-- Java Mvp Classes. -->
+        <action id="JustMvp.NewJavaMvpClassesAction" class="com.bfu.plugin.justmvp.NewJavaMvpClassesAction"
+                text="Java Mvp Classes" description="Auto generate template sources for just-mvp (java)">
+            <add-to-group
+                    group-id="NewGroup"
+                    anchor="after"
+                    relative-to-action="Kotlin.NewFile"
+            />
+        </action>
+
+        <!-- Kotlin Mvp Classes. -->
+        <action id="JustMvp.NewKotlinMvpClassesAction" class="com.bfu.plugin.justmvp.NewKotlinMvpClassesAction"
+                text="Kotlin Mvp Classes" description="Auto generate template sources for just-mvp (kotlin)">
+            <add-to-group
+                    group-id="NewGroup"
+                    anchor="after"
+                    relative-to-action="JustMvp.NewJavaMvpClassesAction"
+            />
+        </action>
+
     </actions>
 </idea-plugin>
