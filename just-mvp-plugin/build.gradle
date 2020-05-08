@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'com.bfu'
-version '1.0.2-SNAPSHOT'
+version '1.0.6'
 
 repositories {
     mavenCentral()
@@ -17,14 +17,37 @@ dependencies {
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
+
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+String ideDir = properties.getProperty("ideDirectory")
+String tokenValue = properties.getProperty("token")
+
 intellij {
+    // see https://www.jetbrains.org/intellij/sdk/docs/products/android_studio.html
     version '2018.3.4'
+    plugins 'android'
+    updateSinceUntilBuild false
 }
+
+runIde {
+    // 启动本地 androidStudio
+    ideDirectory ideDir
+}
+
 patchPluginXml {
     changeNotes """
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>"""
+      This is first version.<br />
+      Build by kotlin (exclusive UI component, see https://www.jetbrains.org/intellij/sdk/docs/tutorials/kotlin.html section 4.)<br />
+      Build by Intellij version 2018.3.4 <br />
+      This plugin used in AndroidStudio, <br />     
+      """
+}
+
+publishPlugin {
+    token tokenValue
 }

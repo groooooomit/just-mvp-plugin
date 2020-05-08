@@ -83,12 +83,12 @@ class ViewSourceCodeGenerator(context: ActionEventContext, options: GenerateOpti
                     |import just.mvp.PresenterActivity;
                     |${if (options.isGenerateLayout && !context.appPackageName.isNullOrEmpty()) "import ${context.appPackageName}.R;" else ""}
                     |
-                    |public class ${options.prefixName}Activity extends PresenterActivity<${options.prefixName}Contract.Presenter>, ${options.prefixName}Contract.View {
+                    |public class ${options.prefixName}Activity extends PresenterActivity<${options.prefixName}Presenter> implements ${options.prefixName}Contract.View {
                     |
                     |    @Override
                     |    protected void onCreate(@Nullable Bundle savedInstanceState) {
                     |        super.onCreate(savedInstanceState);
-                    |       ${if (options.isGenerateLayout) "setContentView(R.layout.${layoutName})" else ""}
+                    |       ${if (options.isGenerateLayout) "setContentView(R.layout.${layoutName});" else ""}
                     |    }
                     |
                     |}

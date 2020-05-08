@@ -1,16 +1,20 @@
 <idea-plugin>
     <id>com.bfu.just-mvp-plugin</id>
-    <name>JustMvpGenerator</name>
-    <version>1.0.2</version>
+    <name>Just Mvp Generator</name>
+    <version>1.0.4</version>
     <vendor email="fubofubo@hotmail.com" url="https://github.com/groooooomit">groooooomit</vendor>
 
     <description><![CDATA[
-    This is a small plugin to quickly generate just-mvp template code.<br>
+    This is a helpful plugin to quickly generate <a href="https://github.com/groooooomit/just-mvp">just-mvp</a> template code.<br>
     ]]></description>
 
-    <extensions defaultExtensionNs="com.intellij">
-        <!-- Add your extensions here -->
-    </extensions>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+    <idea-version since-build="173.0"/>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+    on how to target different products -->
+    <depends>com.intellij.modules.androidstudio</depends>
 
     <actions>
 
