@@ -2,19 +2,9 @@ package com.bfu.plugin.justmvp.core
 
 import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.InputValidatorEx
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.PsiManager
-
-/**
- * 类名验证器
- */
-class ClassNameValidator internal constructor(private val errorMsg: String) : InputValidatorEx {
-    override fun getErrorText(inputString: String?) = if (inputString.isJavaIdentifier()) null else errorMsg
-    override fun checkInput(inputString: String?) = getErrorText(inputString) == null
-    override fun canClose(inputString: String?) = getErrorText(inputString) == null
-}
 
 /**
  * 创建子文件

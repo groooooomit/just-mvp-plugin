@@ -1,13 +1,14 @@
 package com.bfu.plugin.justmvp.core.generator
 
+import com.bfu.plugin.justmvp.core.ActionEventContext
 import com.bfu.plugin.justmvp.core.GenerateOptions
 import com.bfu.plugin.justmvp.core.LanguageType
 
-class ContractSourceCodeGenerator(options: GenerateOptions) : AbstractSourceCodeGenerator(options) {
+class ContractSourceCodeGenerator(context: ActionEventContext, options: GenerateOptions) : AbstractSourceCodeGenerator(context) {
 
     override val needContinue = options.isGenerateContract
 
-    override val dir = options.targetDir
+    override val dirPath = context.triggerDir.path
 
     override val fileName = "${options.prefixName}Contract${options.languageType.ext}"
 
@@ -15,7 +16,7 @@ class ContractSourceCodeGenerator(options: GenerateOptions) : AbstractSourceCode
 
     override val sourceCode = when (options.languageType) {
         LanguageType.KOTLIN -> """
-            |package ${options.packageName}
+            |package ${context.triggerPackageName}
             |
             |import just.mvp.base.IPresenter
             |import just.mvp.base.IView
@@ -29,7 +30,7 @@ class ContractSourceCodeGenerator(options: GenerateOptions) : AbstractSourceCode
             |}
             """.trimMargin()
         LanguageType.JAVA -> """
-            |package ${options.packageName};
+            |package ${context.triggerPackageName};
             |
             |import just.mvp.base.IPresenter;
             |import just.mvp.base.IView;

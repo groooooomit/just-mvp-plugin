@@ -1,5 +1,6 @@
 package com.bfu.plugin.justmvp
 
+import com.bfu.plugin.justmvp.core.ActionEventContext
 import com.bfu.plugin.justmvp.core.generator.ContractSourceCodeGenerator
 import com.bfu.plugin.justmvp.core.generator.LayoutSourceCodeGenerator
 import com.bfu.plugin.justmvp.core.generator.PresenterSourceCodeGenerator
@@ -8,6 +9,7 @@ import com.bfu.plugin.justmvp.ui.NewMvpClassesOptionsDialog
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DataKeys
+import com.intellij.openapi.fileEditor.OpenFileDescriptor
 
 /**
  * 一键创建 Mvp 的 Kotlin 源码文件
@@ -15,19 +17,20 @@ import com.intellij.openapi.actionSystem.DataKeys
 class NewMvpClassesAction : AnAction() {
 
     override fun actionPerformed(event: AnActionEvent) {
+        val context = ActionEventContext(event)
 
-        NewMvpClassesOptionsDialog.showDialog(event) {
+        NewMvpClassesOptionsDialog.showDialog(context) {
             /* 生成 contract 并打开. */
-            ContractSourceCodeGenerator(it).generate()
+            ContractSourceCodeGenerator(context, it).generate()?.let { file -> OpenFileDescriptor(context.project, file) }?.navigate(true)
 
             /* 生成 presenter 并打开. */
-            PresenterSourceCodeGenerator(it).generate()
+            PresenterSourceCodeGenerator(context, it).generate()?.let { file -> OpenFileDescriptor(context.project, file) }?.navigate(true)
 
             /* 生成 ui 并打开. */
-            ViewSourceCodeGenerator(it).generate()
+            ViewSourceCodeGenerator(context, it).generate()?.let { file -> OpenFileDescriptor(context.project, file) }?.navigate(true)
 
             /* 生成布局并打开. */
-            LayoutSourceCodeGenerator(it).generate()
+            LayoutSourceCodeGenerator(context, it).generate()?.let { file -> OpenFileDescriptor(context.project, file) }?.navigate(true)
         }
     }
 

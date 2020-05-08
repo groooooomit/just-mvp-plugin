@@ -1,10 +1,6 @@
 package com.bfu.plugin.justmvp.ui;
 
-import com.bfu.plugin.justmvp.core.GenerateOptions;
-import com.bfu.plugin.justmvp.core.LanguageType;
-import com.bfu.plugin.justmvp.core.MyUtilsKt;
-import com.bfu.plugin.justmvp.core.ViewType;
-import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.bfu.plugin.justmvp.core.*;
 import kotlin.Unit;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,7 +40,12 @@ public class NewMvpClassesOptionsDialog extends JDialog {
     /**
      * ok event callback
      */
-    private Callback callback;
+    private final Callback callback;
+
+    /**
+     * context
+     */
+    private final ActionEventContext context;
 
     /**
      * source generate options
@@ -52,13 +53,15 @@ public class NewMvpClassesOptionsDialog extends JDialog {
     private final GenerateOptions options;
 
 
-    public NewMvpClassesOptionsDialog(AnActionEvent event) {
-        options = new GenerateOptions(event, this::onOptionsChanged);
+    public NewMvpClassesOptionsDialog(ActionEventContext context, Callback callback) {
+        this.context = context;
+        this.callback = callback;
+        options = new GenerateOptions(this::onOptionsChanged);
         setTitle("Create Mvp Classes");
         setContentPane(contentPane);
         setModal(true);
-        setResizable(false);
-        setLocationRelativeTo(null);
+        /*setResizable(false);*/
+        /*setLocationRelativeTo(null);*/
         getRootPane().setDefaultButton(buttonOK);
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -87,7 +90,8 @@ public class NewMvpClassesOptionsDialog extends JDialog {
 
         /* checkBox Layout. */
         checkBoxLayout.addChangeListener(e -> options.setGenerateLayout(checkBoxLayout.isSelected()));
-        checkBoxLayout.setSelected(true); /* default select. */
+        checkBoxLayout.setEnabled(checkBoxView.isSelected());
+        checkBoxLayout.setSelected(checkBoxView.isSelected()); /* default select. */
 
         /* radio activity. */
         radioActivity.addChangeListener(e -> {
@@ -95,7 +99,7 @@ public class NewMvpClassesOptionsDialog extends JDialog {
                 options.setViewType(ViewType.ACTIVITY);
             }
         });
-        radioActivity.setEnabled(checkBoxView.isEnabled());
+        radioActivity.setEnabled(checkBoxView.isSelected());
         radioActivity.setSelected(true);
 
         /* radio fragment. */
@@ -104,7 +108,7 @@ public class NewMvpClassesOptionsDialog extends JDialog {
                 options.setViewType(ViewType.FRAGMENT);
             }
         });
-        radioFragment.setEnabled(checkBoxView.isEnabled());
+        radioFragment.setEnabled(checkBoxView.isSelected());
         radioFragment.setSelected(false);
 
         /* radio dialog fragment. */
@@ -113,7 +117,7 @@ public class NewMvpClassesOptionsDialog extends JDialog {
                 options.setViewType(ViewType.DIALOG_FRAGMENT);
             }
         });
-        radioDialogFragment.setEnabled(checkBoxView.isEnabled());
+        radioDialogFragment.setEnabled(checkBoxView.isSelected());
         radioDialogFragment.setSelected(false);
 
         /* checkBox view. */
@@ -124,6 +128,8 @@ public class NewMvpClassesOptionsDialog extends JDialog {
             radioActivity.setEnabled(checkBoxView.isSelected());
             radioFragment.setEnabled(checkBoxView.isSelected());
             radioDialogFragment.setEnabled(checkBoxView.isSelected());
+            checkBoxLayout.setEnabled(checkBoxView.isSelected());
+            checkBoxLayout.setSelected(checkBoxView.isSelected());
         });
         checkBoxView.setSelected(true); /* default select. */
 
@@ -160,24 +166,49 @@ public class NewMvpClassesOptionsDialog extends JDialog {
         buttonCancel.addActionListener(e -> onCancel());
     }
 
+    @SuppressWarnings("UseJBColor")
+    interface MyColor {
+        Color RED = new Color(255, 82, 82);
+    }
+
     /**
      * options change.
      */
     private Unit onOptionsChanged() {
         if (MyUtilsKt.isJavaIdentifier(options.getPrefixName())) {
             buttonOK.setEnabled(true);
+
             labelMessage.setForeground(originLabelMessageForeground);
             labelMessage.setText("   ");
-            labelContract.setText(options.isGenerateContract() ? options.getPrefixName() + "Contract" + options.getLanguageType().getExt() : "    ");
-            labelPresenter.setText(options.isGeneratePresenter() ? options.getPrefixName() + "Presenter" + options.getLanguageType().getExt() : "    ");
-            labelView.setText(options.isGenerateView() ? options.getPrefixName() + options.getViewType().getNick() + options.getLanguageType().getExt() : "    ");
-            labelLayout.setText(options.isGenerateLayout() ? options.getViewType().getLayoutPrefix() + MyUtilsKt.humpToUnderline(options.getPrefixName()) + ".xml" : "     ");
+
+            final String simpleTriggerPath = context.getSimpleTriggerPath();
+
+            /* label contract. */
+            final String contractFileName = options.getPrefixName() + "Contract" + options.getLanguageType().getExt();
+            labelContract.setText(options.isGenerateContract() ? contractFileName : "    ");
+            labelContract.setToolTipText(options.isGenerateContract() ? simpleTriggerPath + "/" + contractFileName : null);
+
+            /* label presenter. */
+            final String presenterFileName = options.getPrefixName() + "Presenter" + options.getLanguageType().getExt();
+            labelPresenter.setText(options.isGeneratePresenter() ? presenterFileName : "    ");
+            labelPresenter.setToolTipText(options.isGeneratePresenter() ? simpleTriggerPath + "/" + presenterFileName : null);
+
+            /* label view. */
+            final String viewFileName = options.getPrefixName() + options.getViewType().getNick() + options.getLanguageType().getExt();
+            labelView.setText(options.isGenerateView() ? viewFileName : "    ");
+            labelView.setToolTipText(options.isGenerateView() ? simpleTriggerPath + "/" + viewFileName : null);
+
+            /* label layout. */
+            final String simpleLayoutDirPath = context.getSimpleLayoutDirPath();
+            final String layoutFileName = options.getViewType().getLayoutPrefix() + MyUtilsKt.humpToUnderline(options.getPrefixName()) + ".xml";
+            labelLayout.setText(options.isGenerateLayout() ? layoutFileName : "     ");
+            labelLayout.setToolTipText(options.isGenerateLayout() ? simpleLayoutDirPath + "/" + layoutFileName : null);
+
         } else {
             buttonOK.setEnabled(false);
             final boolean isPrefixNameEmpty = options.getPrefixName() == null || options.getPrefixName().trim().isEmpty();
             labelMessage.setText(isPrefixNameEmpty ? "Please input class name prefix." : "Invalid class name prefix!");
-            //noinspection UseJBColor
-            labelMessage.setForeground(isPrefixNameEmpty ? originLabelMessageForeground : Color.RED);
+            labelMessage.setForeground(isPrefixNameEmpty ? originLabelMessageForeground : MyColor.RED);
             labelContract.setText("   ");
             labelPresenter.setText("   ");
             labelView.setText("   ");
@@ -197,15 +228,13 @@ public class NewMvpClassesOptionsDialog extends JDialog {
         dispose();
     }
 
-    public static void showDialog(AnActionEvent event, Callback callback) {
-        final NewMvpClassesOptionsDialog dialog = new NewMvpClassesOptionsDialog(event);
-        dialog.setCallback(callback);
+    public static void showDialog(ActionEventContext context, Callback callback) {
+        final NewMvpClassesOptionsDialog dialog = new NewMvpClassesOptionsDialog(context, callback);
         dialog.pack();
+        /* center screen. */
+        final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        dialog.setLocation((screenSize.width - dialog.getWidth()) / 2, (screenSize.height - dialog.getHeight()) / 2);
         dialog.setVisible(true);
-    }
-
-    public void setCallback(Callback callback) {
-        this.callback = callback;
     }
 
     @FunctionalInterface

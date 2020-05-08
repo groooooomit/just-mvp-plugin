@@ -1,16 +1,12 @@
 package com.bfu.plugin.justmvp.core.generator
 
-import com.bfu.plugin.justmvp.core.GenerateOptions
-import com.bfu.plugin.justmvp.core.LanguageType
-import com.bfu.plugin.justmvp.core.ViewType
-import com.bfu.plugin.justmvp.core.humpToUnderline
+import com.bfu.plugin.justmvp.core.*
 
-// todo 需要 Manifest 获取 packageName 后 import xxx.R
-class ViewSourceCodeGenerator(options: GenerateOptions) : AbstractSourceCodeGenerator(options) {
+class ViewSourceCodeGenerator(context: ActionEventContext, options: GenerateOptions) : AbstractSourceCodeGenerator(context) {
 
     override val needContinue = options.isGenerateView
 
-    override val dir = options.targetDir
+    override val dirPath = context.triggerDir.path
 
     override val fileName = "${options.prefixName}${options.viewType.nick}${options.languageType.ext}"
 
@@ -22,11 +18,11 @@ class ViewSourceCodeGenerator(options: GenerateOptions) : AbstractSourceCodeGene
         LanguageType.KOTLIN -> {
             when (options.viewType) {
                 ViewType.ACTIVITY -> """
-                    |package ${options.packageName}
+                    |package ${context.triggerPackageName}
                     |
                     |import android.os.Bundle
                     |import just.mvp.PresenterActivity
-                    |${if (options.isGenerateLayout) "import kotlinx.android.synthetic.${options.variantName}.${layoutName}.*" else ""}
+                    |${if (options.isGenerateLayout && !context.appPackageName.isNullOrEmpty()) "import ${context.appPackageName}.R" else ""}
                     |
                     |class ${options.prefixName}Activity : PresenterActivity<${options.prefixName}Presenter>(), ${options.prefixName}Contract.View {
                     |
@@ -39,12 +35,12 @@ class ViewSourceCodeGenerator(options: GenerateOptions) : AbstractSourceCodeGene
                     """.trimMargin()
 
                 ViewType.FRAGMENT -> """
-                    |package ${options.packageName}
+                    |package ${context.triggerPackageName}
                     |
                     |import android.os.Bundle
                     |import android.view.View
                     |import just.mvp.PresenterFragment
-                    |${if (options.isGenerateLayout) "import kotlinx.android.synthetic.${options.variantName}.${layoutName}.*" else ""}
+                    |${if (options.isGenerateLayout && !context.appPackageName.isNullOrEmpty()) "import ${context.appPackageName}.R" else ""}
                     |
                     |class ${options.prefixName}Fragment : PresenterFragment<${options.prefixName}Presenter>(), ${options.prefixName}Contract.View {
                     |
@@ -58,14 +54,14 @@ class ViewSourceCodeGenerator(options: GenerateOptions) : AbstractSourceCodeGene
                     """.trimMargin()
 
                 ViewType.DIALOG_FRAGMENT -> """
-                    |package ${options.packageName}
+                    |package ${context.triggerPackageName}
                     |
                     |import android.os.Bundle
                     |import android.view.View
                     |import just.mvp.PresenterDialogFragment
-                    |${if (options.isGenerateLayout) "import kotlinx.android.synthetic.${options.variantName}.${layoutName}.*" else ""}
+                    |${if (options.isGenerateLayout && !context.appPackageName.isNullOrEmpty()) "import ${context.appPackageName}.R" else ""}
                     |
-                    |class ${options.prefixName}Fragment : PresenterDialogFragment<${options.prefixName}Presenter>(), ${options.prefixName}Contract.View {
+                    |class ${options.prefixName}DialogFragment : PresenterDialogFragment<${options.prefixName}Presenter>(), ${options.prefixName}Contract.View {
                     |
                     |    override fun getLayoutResId() = ${if (options.isGenerateLayout) "R.layout.${layoutName}" else "0"}
                     |
@@ -80,11 +76,12 @@ class ViewSourceCodeGenerator(options: GenerateOptions) : AbstractSourceCodeGene
         LanguageType.JAVA -> {
             when (options.viewType) {
                 ViewType.ACTIVITY -> """
-                    |package ${options.packageName};
+                    |package ${context.triggerPackageName};
                     |
                     |import android.os.Bundle;
                     |import androidx.annotation.Nullable;
                     |import just.mvp.PresenterActivity;
+                    |${if (options.isGenerateLayout && !context.appPackageName.isNullOrEmpty()) "import ${context.appPackageName}.R;" else ""}
                     |
                     |public class ${options.prefixName}Activity extends PresenterActivity<${options.prefixName}Contract.Presenter>, ${options.prefixName}Contract.View {
                     |
@@ -98,13 +95,14 @@ class ViewSourceCodeGenerator(options: GenerateOptions) : AbstractSourceCodeGene
                     """.trimMargin()
 
                 ViewType.FRAGMENT -> """
-                    |package ${options.packageName};
+                    |package ${context.triggerPackageName};
                     |
                     |import android.os.Bundle;
                     |import android.view.View;
                     |
                     |import androidx.annotation.NonNull;
                     |import androidx.annotation.Nullable;
+                    |${if (options.isGenerateLayout && !context.appPackageName.isNullOrEmpty()) "import ${context.appPackageName}.R;" else ""}
                     |
                     |import just.mvp.PresenterFragment;
                     |
@@ -124,13 +122,14 @@ class ViewSourceCodeGenerator(options: GenerateOptions) : AbstractSourceCodeGene
                     """.trimMargin()
 
                 ViewType.DIALOG_FRAGMENT -> """
-                    |package ${options.packageName};
+                    |package ${context.triggerPackageName};
                     |
                     |import android.os.Bundle;
                     |import android.view.View;
                     |
                     |import androidx.annotation.NonNull;
                     |import androidx.annotation.Nullable;
+                    |${if (options.isGenerateLayout && !context.appPackageName.isNullOrEmpty()) "import ${context.appPackageName}.R;" else ""}
                     |
                     |import just.mvp.PresenterDialogFragment;
                     |
@@ -151,5 +150,4 @@ class ViewSourceCodeGenerator(options: GenerateOptions) : AbstractSourceCodeGene
             }
         }
     }
-
 }

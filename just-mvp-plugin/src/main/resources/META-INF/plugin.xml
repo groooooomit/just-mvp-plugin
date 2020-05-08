@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>com.bfu.just-mvp-plugin</id>
     <name>JustMvpGenerator</name>
-    <version>1.0.0</version>
+    <version>1.0.2</version>
     <vendor email="fubofubo@hotmail.com" url="https://github.com/groooooomit">groooooomit</vendor>
 
     <description><![CDATA[
@@ -15,8 +15,12 @@
     <actions>
 
         <!-- Kotlin Mvp Classes. -->
-        <action id="JustMvp.NewMvpClassesAction" class="com.bfu.plugin.justmvp.NewMvpClassesAction"
-                text="Just Mvp Classes" description="Auto generate template sources for just-mvp.">
+        <action id="JustMvp.NewMvpClassesAction"
+                class="com.bfu.plugin.justmvp.NewMvpClassesAction"
+                text="Just Mvp Classes"
+                description="Auto generate template sources for just-mvp."
+                icon="JustMvpPluginIcons.ICON_DOGE"
+        >
             <add-to-group
                     group-id="NewGroup"
                     anchor="after"

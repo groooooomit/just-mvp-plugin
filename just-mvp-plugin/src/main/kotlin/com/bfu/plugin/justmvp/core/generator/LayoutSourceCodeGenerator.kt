@@ -1,5 +1,6 @@
 package com.bfu.plugin.justmvp.core.generator
 
+import com.bfu.plugin.justmvp.core.ActionEventContext
 import com.bfu.plugin.justmvp.core.GenerateOptions
 import com.bfu.plugin.justmvp.core.humpToUnderline
 import com.intellij.ide.highlighter.XmlFileType
@@ -8,11 +9,11 @@ import com.intellij.openapi.fileTypes.FileType
 /**
  * 布局文件
  */
-class LayoutSourceCodeGenerator(options: GenerateOptions) : AbstractSourceCodeGenerator(options) {
+class LayoutSourceCodeGenerator(context: ActionEventContext, options: GenerateOptions) : AbstractSourceCodeGenerator(context) {
 
-    override val needContinue = options.isGenerateLayout
+    override val needContinue = options.isGenerateView && options.isGenerateLayout
 
-    override val dir = options.layoutDir
+    override val dirPath = context.layoutDirPath
 
     override val fileName = "${options.viewType.layoutPrefix}${options.prefixName.humpToUnderline()}.xml"
 
@@ -25,7 +26,7 @@ class LayoutSourceCodeGenerator(options: GenerateOptions) : AbstractSourceCodeGe
         |        xmlns:tools="http://schemas.android.com/tools"
         |        android:layout_width="match_parent"
         |        android:layout_height="match_parent"
-        |        tools:context="${options.packageName}.${options.prefixName}${options.viewType.nick}">
+        |        tools:context="${context.triggerPackageName}.${options.prefixName}${options.viewType.nick}">
         |
         |    <TextView
         |            android:id="@+id/txt_token"
