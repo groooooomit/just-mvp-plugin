@@ -22,8 +22,12 @@ class PresenterSourceCodeGenerator(context: ActionEventContext, options: Generat
             |
             |class ${options.prefixName}Presenter : BasePresenter<${options.prefixName}Contract.View>(), ${options.prefixName}Contract.Presenter {
             |
-            |    override fun afterViewCreate() {
+            |    override fun onInitialize() {
+            |        // Presenter is ready, now you can initialize model resource.
+            |    }
             |    
+            |    override fun afterViewCreate() {
+            |        // View is ready, now you can update view or get data from view. 
             |    }
             |
             |}
@@ -36,8 +40,13 @@ class PresenterSourceCodeGenerator(context: ActionEventContext, options: Generat
             |public class ${options.prefixName}Presenter extends BasePresenter<${options.prefixName}Contract.View> implements ${options.prefixName}Contract.Presenter {
             |
             |    @Override
+            |    public void onInitialize() {
+            |       // Presenter is ready, now you can initialize model resource.
+            |    }
+            |    
+            |    @Override
             |    public void afterViewCreate() {
-            |
+            |       // View is ready, now you can update view or get data from view.
             |    }
             |    
             |}
