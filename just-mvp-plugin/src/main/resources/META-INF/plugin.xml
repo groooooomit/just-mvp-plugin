@@ -5,7 +5,24 @@
     <vendor email="fubofubo@hotmail.com" url="https://github.com/groooooomit">groooooomit</vendor>
 
     <description><![CDATA[
-    This is a helpful plugin to quickly generate <a href="https://github.com/groooooomit/just-mvp">just-mvp</a> template code.<br>
+    <html>
+    <body>
+        <p>This is a helpful plugin to quickly generate <a href="https://github.com/groooooomit/just-mvp">just-mvp</a> template code.</p>
+        <ul>
+            <li>
+                <p>Action Location</p>
+                <br />
+                <p><img src="https://raw.githubusercontent.com/groooooomit/just-mvp-plugin/master/screenshots/img_action.png" width="333" height="299" alt="source directory right click -> New -> Just Mvp Classes"/></p>
+            </li>
+            <br />
+            <li>
+                <p>Options Dialog</p>
+                <br />
+                <p><img src="https://raw.githubusercontent.com/groooooomit/just-mvp-plugin/master/screenshots/img_dialog.png" width="309" height="401" alt="Select the source options you want to generate."/></p>
+            </li>
+        </ul>
+    </body>
+    </html>
     ]]></description>
 
 
@@ -14,6 +31,7 @@
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
     on how to target different products -->
+    <!--suppress PluginXmlValidity -->
     <depends>com.intellij.modules.androidstudio</depends>
 
     <actions>
@@ -25,6 +43,7 @@
                 description="Auto generate template sources for just-mvp."
                 icon="JustMvpPluginIcons.ICON_DOGE"
         >
+            <!--suppress PluginXmlValidity -->
             <add-to-group
                     group-id="NewGroup"
                     anchor="after"
