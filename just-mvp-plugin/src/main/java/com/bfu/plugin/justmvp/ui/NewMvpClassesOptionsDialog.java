@@ -1,6 +1,7 @@
 package com.bfu.plugin.justmvp.ui;
 
 import com.bfu.plugin.justmvp.core.*;
+import com.intellij.openapi.vfs.VirtualFile;
 import kotlin.Unit;
 import org.jetbrains.annotations.NotNull;
 
@@ -8,9 +9,7 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 
 public class NewMvpClassesOptionsDialog extends JDialog {
     private JPanel contentPane;
@@ -75,70 +74,98 @@ public class NewMvpClassesOptionsDialog extends JDialog {
         initComponents();
     }
 
+    /**
+     * ItemListenerProcessor of JCheckBox
+     */
+    private static final class ItemListenerProcessor implements ItemListener {
 
+        @NotNull
+        private final OnSelectChangeListener onSelectChangeListener;
+
+        private ItemListenerProcessor(@NotNull OnSelectChangeListener onSelectChangeListener) {
+            this.onSelectChangeListener = onSelectChangeListener;
+        }
+
+        @Override
+        public final void itemStateChanged(ItemEvent e) {
+            final int stateChange = e.getStateChange();
+            if (ItemEvent.SELECTED == stateChange) {
+                onSelectChangeListener.onSelectChange(true);
+            } else if (ItemEvent.DESELECTED == stateChange) {
+                onSelectChangeListener.onSelectChange(false);
+            }
+        }
+
+        public interface OnSelectChangeListener {
+            void onSelectChange(boolean isSelect);
+        }
+    }
+
+
+    // see https://docs.oracle.com/javase/tutorial/uiswing/components/button.html
     private void initComponents() {
         /* record origin label color. */
         originLabelMessageForeground = labelMessage.getForeground();
 
         /* checkBox Contract. */
-        checkBoxContract.addChangeListener(e -> options.setGenerateContract(checkBoxContract.isSelected()));
+        checkBoxContract.addItemListener(new ItemListenerProcessor(options::setGenerateContract));
         checkBoxContract.setSelected(true); /* default select. */
 
         /* checkBox Presenter. */
-        checkBoxPresenter.addChangeListener(e -> options.setGeneratePresenter(checkBoxPresenter.isSelected()));
+        checkBoxPresenter.addItemListener(new ItemListenerProcessor(options::setGeneratePresenter));
         checkBoxPresenter.setSelected(true); /* default select. */
 
         /* checkBox Layout. */
-        checkBoxLayout.addChangeListener(e -> options.setGenerateLayout(checkBoxLayout.isSelected()));
+        checkBoxLayout.addItemListener(new ItemListenerProcessor(options::setGenerateLayout));
         checkBoxLayout.setEnabled(checkBoxView.isSelected());
         checkBoxLayout.setSelected(checkBoxView.isSelected()); /* default select. */
 
         /* radio activity. */
-        radioActivity.addChangeListener(e -> {
-            if (radioActivity.isSelected()) {
+        radioActivity.addItemListener(new ItemListenerProcessor(isSelect -> {
+            if (isSelect) {
                 options.setViewType(ViewType.ACTIVITY);
             }
-        });
+        }));
         radioActivity.setEnabled(checkBoxView.isSelected());
-        radioActivity.setSelected(true);
+        radioActivity.setSelected(true); /* default selected activity. */
 
         /* radio fragment. */
-        radioFragment.addChangeListener(e -> {
-            if (radioFragment.isSelected()) {
+        radioFragment.addItemListener(new ItemListenerProcessor(isSelect -> {
+            if (isSelect) {
                 options.setViewType(ViewType.FRAGMENT);
             }
-        });
+        }));
         radioFragment.setEnabled(checkBoxView.isSelected());
         radioFragment.setSelected(false);
 
         /* radio dialog fragment. */
-        radioDialogFragment.addChangeListener(e -> {
-            if (radioDialogFragment.isSelected()) {
+        radioDialogFragment.addItemListener(new ItemListenerProcessor(isSelect -> {
+            if (isSelect) {
                 options.setViewType(ViewType.DIALOG_FRAGMENT);
             }
-        });
+        }));
         radioDialogFragment.setEnabled(checkBoxView.isSelected());
         radioDialogFragment.setSelected(false);
 
         /* checkBox view. */
-        checkBoxView.addChangeListener(e -> {
-            options.setGenerateView(checkBoxView.isSelected());
+        checkBoxView.addItemListener(new ItemListenerProcessor(isSelect -> {
+            options.setGenerateView(isSelect);
 
             /* sub item status. */
-            radioActivity.setEnabled(checkBoxView.isSelected());
-            radioFragment.setEnabled(checkBoxView.isSelected());
-            radioDialogFragment.setEnabled(checkBoxView.isSelected());
-            checkBoxLayout.setEnabled(checkBoxView.isSelected());
-            checkBoxLayout.setSelected(checkBoxView.isSelected());
-        });
+            radioActivity.setEnabled(isSelect);
+            radioFragment.setEnabled(isSelect);
+            radioDialogFragment.setEnabled(isSelect);
+            checkBoxLayout.setEnabled(isSelect);
+            checkBoxLayout.setSelected(isSelect);
+        }));
         checkBoxView.setSelected(true); /* default select. */
 
         /* radio kotlin. */
-        radioKotlin.addChangeListener(e -> options.setLanguageType(radioKotlin.isSelected() ? LanguageType.KOTLIN : LanguageType.JAVA));
+        radioKotlin.addItemListener(new ItemListenerProcessor(isSelect -> options.setLanguageType(isSelect? LanguageType.KOTLIN : LanguageType.JAVA)));
         radioKotlin.setSelected(true); /* default select. */
 
         /* radio java. */
-        radioJava.addChangeListener(e -> options.setLanguageType(radioJava.isSelected() ? LanguageType.JAVA : LanguageType.KOTLIN));
+        radioJava.addItemListener(new ItemListenerProcessor(isSelect -> options.setLanguageType(isSelect? LanguageType.JAVA : LanguageType.KOTLIN)));
         radioJava.setSelected(false); /* default do not select. */
 
         /* prefix name input. */
@@ -166,9 +193,11 @@ public class NewMvpClassesOptionsDialog extends JDialog {
         buttonCancel.addActionListener(e -> onCancel());
     }
 
-    @SuppressWarnings("UseJBColor")
+    @SuppressWarnings({"UseJBColor", "InspectionUsingGrayColors"})
     interface MyColor {
         Color RED = new Color(255, 82, 82);
+        Color GREEN = new Color(76, 175, 80);
+        Color GREY = new Color(128, 128, 128);
     }
 
     /**
@@ -178,31 +207,38 @@ public class NewMvpClassesOptionsDialog extends JDialog {
         if (MyUtilsKt.isJavaIdentifier(options.getPrefixName())) {
             buttonOK.setEnabled(true);
 
+            /* label message. */
             labelMessage.setForeground(originLabelMessageForeground);
             labelMessage.setText("   ");
 
             final String simpleTriggerPath = context.getSimpleTriggerPath();
+            final VirtualFile triggerDir = context.getTriggerDir();
+            final VirtualFile layoutDir = context.getLayoutDir();
 
             /* label contract. */
             final String contractFileName = options.getPrefixName() + "Contract" + options.getLanguageType().getExt();
             labelContract.setText(options.isGenerateContract() ? contractFileName : "    ");
             labelContract.setToolTipText(options.isGenerateContract() ? simpleTriggerPath + "/" + contractFileName : null);
+            labelContract.setForeground(null != triggerDir.findChild(contractFileName) ? MyColor.GREY : MyColor.GREEN);
 
             /* label presenter. */
             final String presenterFileName = options.getPrefixName() + "Presenter" + options.getLanguageType().getExt();
             labelPresenter.setText(options.isGeneratePresenter() ? presenterFileName : "    ");
             labelPresenter.setToolTipText(options.isGeneratePresenter() ? simpleTriggerPath + "/" + presenterFileName : null);
+            labelPresenter.setForeground(null != triggerDir.findChild(presenterFileName) ? MyColor.GREY : MyColor.GREEN);
 
             /* label view. */
             final String viewFileName = options.getPrefixName() + options.getViewType().getNick() + options.getLanguageType().getExt();
             labelView.setText(options.isGenerateView() ? viewFileName : "    ");
             labelView.setToolTipText(options.isGenerateView() ? simpleTriggerPath + "/" + viewFileName : null);
+            labelView.setForeground(null != triggerDir.findChild(viewFileName) ? MyColor.GREY : MyColor.GREEN);
 
             /* label layout. */
             final String simpleLayoutDirPath = context.getSimpleLayoutDirPath();
             final String layoutFileName = options.getViewType().getLayoutPrefix() + MyUtilsKt.humpToUnderline(options.getPrefixName()) + ".xml";
             labelLayout.setText(options.isGenerateLayout() ? layoutFileName : "     ");
             labelLayout.setToolTipText(options.isGenerateLayout() ? simpleLayoutDirPath + "/" + layoutFileName : null);
+            labelLayout.setForeground(null != layoutDir && null != layoutDir.findChild(layoutFileName) ? MyColor.GREY : MyColor.GREEN);
 
         } else {
             buttonOK.setEnabled(false);

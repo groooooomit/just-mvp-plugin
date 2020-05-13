@@ -27,7 +27,7 @@ class ActionEventContext(event: AnActionEvent) {
      * 目录包名文件路径
      * com/bfu/a/b/c
      */
-    val triggerPackagePath = triggerDir.path.substringAfter("/java/")
+    private val triggerPackagePath = triggerDir.path.substringAfter("/java/")
 
     /**
      * 包路径名
@@ -51,6 +51,11 @@ class ActionEventContext(event: AnActionEvent) {
      * layout 文件夹路径
      */
     val layoutDirPath: String = "${variantDir.path}/res/layout"
+
+    /**
+     * layout 文件目录，可能为 null
+     */
+    val layoutDir: VirtualFile? = triggerDir.fileSystem.findFileByPath(layoutDirPath)
 
     /**
      * Project 名称

@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'com.bfu'
-version '1.1.0'
+version '1.1.2'
 
 repositories {
     mavenCentral()
@@ -42,6 +42,7 @@ runIde {
 patchPluginXml {
     changeNotes """
       Updated content of automatically generated template code.<br />
+      Fixed UI Bugs.<br />
       """
 }
 

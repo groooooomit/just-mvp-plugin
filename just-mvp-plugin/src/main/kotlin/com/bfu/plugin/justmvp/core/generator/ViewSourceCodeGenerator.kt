@@ -23,8 +23,7 @@ class ViewSourceCodeGenerator(context: ActionEventContext, options: GenerateOpti
                     |package ${context.triggerPackageName}
                     |
                     |import android.os.Bundle
-                    |import just.mvp.PresenterActivity
-                    |${if (needLayout) "import ${context.appPackageName}.R" else ""}
+                    |import just.mvp.PresenterActivity${if (needLayout) "\nimport ${context.appPackageName}.R" else ""}
                     |
                     |class ${options.prefixName}Activity : PresenterActivity<${options.prefixName}Presenter>(), ${options.prefixName}Contract.View {
                     |
@@ -41,11 +40,8 @@ class ViewSourceCodeGenerator(context: ActionEventContext, options: GenerateOpti
                     |
                     |import android.os.Bundle
                     |import android.view.View
-                    |import just.mvp.PresenterFragment
-                    |${if (needLayout) "import ${context.appPackageName}.R" else ""}
-                    |${if (needLayout) "import just.mvp.widget.LayoutResId" else ""}
-                    |
-                    |${if (needLayout) "@LayoutResId(R.layout.${layoutName})" else ""}
+                    |import just.mvp.PresenterFragment${if (needLayout) "\nimport ${context.appPackageName}.R\nimport just.mvp.widget.LayoutResId" else ""}
+                    |${if (needLayout) "\n@LayoutResId(R.layout.${layoutName})" else ""}
                     |class ${options.prefixName}Fragment : PresenterFragment<${options.prefixName}Presenter>(), ${options.prefixName}Contract.View {
                     |
                     |    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -60,11 +56,8 @@ class ViewSourceCodeGenerator(context: ActionEventContext, options: GenerateOpti
                     |
                     |import android.os.Bundle
                     |import android.view.View
-                    |import just.mvp.PresenterDialogFragment
-                    |${if (needLayout) "import ${context.appPackageName}.R" else ""}
-                    |${if (needLayout) "import just.mvp.widget.LayoutResId" else ""}
-                    |
-                    |${if (needLayout) "@LayoutResId(R.layout.${layoutName})" else ""}
+                    |import just.mvp.PresenterDialogFragment${if (needLayout) "\nimport ${context.appPackageName}.R\nimport just.mvp.widget.LayoutResId" else ""}
+                    |${if (needLayout) "\n@LayoutResId(R.layout.${layoutName})" else ""}
                     |class ${options.prefixName}DialogFragment : PresenterDialogFragment<${options.prefixName}Presenter>(), ${options.prefixName}Contract.View {
                     |
                     |    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -82,8 +75,7 @@ class ViewSourceCodeGenerator(context: ActionEventContext, options: GenerateOpti
                     |
                     |import android.os.Bundle;
                     |import androidx.annotation.Nullable;
-                    |import just.mvp.PresenterActivity;
-                    |${if (needLayout) "import ${context.appPackageName}.R;" else ""}
+                    |import just.mvp.PresenterActivity;${if (needLayout) "\nimport ${context.appPackageName}.R;" else ""}
                     |
                     |public class ${options.prefixName}Activity extends PresenterActivity<${options.prefixName}Presenter> implements ${options.prefixName}Contract.View {
                     |
@@ -104,11 +96,8 @@ class ViewSourceCodeGenerator(context: ActionEventContext, options: GenerateOpti
                     |
                     |import androidx.annotation.NonNull; 
                     |import androidx.annotation.Nullable;
-                    |import just.mvp.PresenterFragment;
-                    |${if (needLayout) "import ${context.appPackageName}.R;" else ""}
-                    |${if (needLayout) "import just.mvp.widget.LayoutResId;" else ""}
-                    |
-                    |${if (needLayout) "@LayoutResId(R.layout.${layoutName})" else ""}
+                    |import just.mvp.PresenterFragment;${if (needLayout) "\nimport ${context.appPackageName}.R;\nimport just.mvp.widget.LayoutResId;" else ""}
+                    |${if (needLayout) "\n@LayoutResId(R.layout.${layoutName})" else ""}
                     |public class ${options.prefixName}Fragment extends PresenterFragment<${options.prefixName}Presenter> implements ${options.prefixName}Contract.View {
                     |
                     |    @Override
@@ -127,11 +116,8 @@ class ViewSourceCodeGenerator(context: ActionEventContext, options: GenerateOpti
                     |
                     |import androidx.annotation.NonNull;
                     |import androidx.annotation.Nullable;
-                    |import just.mvp.PresenterDialogFragment;
-                    |${if (needLayout) "import ${context.appPackageName}.R;" else ""}
-                    |${if (needLayout) "import just.mvp.widget.LayoutResId;" else ""}
-                    |
-                    |${if (needLayout) "@LayoutResId(R.layout.${layoutName})" else ""}
+                    |import just.mvp.PresenterDialogFragment;${if (needLayout) "\nimport ${context.appPackageName}.R;\nimport just.mvp.widget.LayoutResId;" else ""}
+                    |${if (needLayout) "\n@LayoutResId(R.layout.${layoutName})" else ""}
                     |public class ${options.prefixName}DialogFragment extends PresenterDialogFragment<${options.prefixName}Presenter> implements ${options.prefixName}Contract.View {
                     |
                     |    @Override
