@@ -2,7 +2,9 @@
 快速生成 [just-mvp](https://github.com/groooooomit/just-mvp) 模版代码的 AndroidStudio 插件，项目由 gradle 构建，除 UI 外其他功能均由 kotlin 实现。
 
 ## 添加到你的 AndroidStudio
-> File -> Settings -> Plugins -> Marketplace -> 搜索 [Just Mvp Generator](https://plugins.jetbrains.com/plugin/14273-just-mvp-generator)，点击 install 进行插件安装，安装完成后根据提示重启 AndroidStudio。
+> File -> Settings -> Plugins -> Marketplace -> 搜索 [Just Mvp Generator](https://plugins.jetbrains.com/plugin/14273-just-mvp-generator)，点击 install 进行插件安装，安装完成后根据提示重启 AndroidStudio。  
+也可以[点击这里](https://raw.githubusercontent.com/groooooomit/just-mvp-plugin/master/plugins/just-mvp-plugin-1.1.2.jar)下载插件进行离线安装。  
+插件大小 61.9
 
 ![安装插件](https://raw.githubusercontent.com/groooooomit/just-mvp-plugin/master/screenshots/plugins.png)
 
